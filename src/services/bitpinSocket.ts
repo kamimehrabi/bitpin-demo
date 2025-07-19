@@ -26,8 +26,9 @@ export const connectToBitpin = () => {
             if (jsonData.event === "tickers_update") {
                 const eventTime = jsonData.event_time;
 
-                Object.entries(jsonData).forEach(
-                    ([key, value]: [string, any]) => {
+                Object.entries(jsonData)
+                    .filter(([symbol]) => symbol.endsWith("_IRT"))
+                    .forEach(([key, value]: [string, any]) => {
                         if (
                             typeof value === "object" &&
                             value.price &&
@@ -47,8 +48,7 @@ export const connectToBitpin = () => {
 
                             handleTick(key, price, timestamp);
                         }
-                    },
-                );
+                    });
             }
         } catch (err) {
             console.error("[Bitpin] Error parsing WebSocket message", err);
